@@ -3,6 +3,9 @@ name: Trading Strategy Bot
 on:
   workflow_dispatch:  # Only manual triggering via GitHub UI or API
 
+permissions:
+  contents: write
+
 jobs:
   run-strategy:
     runs-on: ubuntu-latest
@@ -27,9 +30,13 @@ jobs:
         python trading_strategy.py
     
     - name: Commit results
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REPO: ${{ github.repository }}
+        REF: ${{ github.ref }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add trade_log.txt
         git diff --quiet && git diff --staged --quiet || git commit -m "Update trade log"
-        git push
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git HEAD:${REF}
