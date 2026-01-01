@@ -1,7 +1,10 @@
 name: Trading Strategy Bot
 
 on:
-  workflow_dispatch:  # Only manual triggering via GitHub UI or API
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Manual triggering via GitHub UI or API
 
 permissions:
   contents: write
